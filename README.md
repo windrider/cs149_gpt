@@ -354,7 +354,7 @@ torch::Tensor myFusedAttention(torch::Tensor QTensor, torch::Tensor KTensor, tor
 
 ​	Flash Attention算法给出的解决方案是，每次计算一个分块行的softmax, 并且保存当前分块的 $ l(x) $ 信息， $l(x)$是softmax式子中的分母，迭代到该行的下一个分块时，更新 $l_{new}(x) $, 用 $l_{new}(x)$替换原来softmax式子中的分母， 迭代地计算每一行的softmax。
 
-![FlashAttentionPseudo](\assets\FlashAttentionPseudo.png)
+![FlashAttentionPseudo](assets/FlashAttentionPseudo.png)
 
 ​	根据给出的算法伪代码进行C++实现
 
