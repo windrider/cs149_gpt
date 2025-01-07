@@ -46,10 +46,8 @@ class CausalSelfAttention(nn.Module):
 
 
 
-Q, K, V经过myAttention函数后计算出注意力矩阵：
-$$
-Attention(Q, K, V) = softmax(QK^T) V
-$$
+Q, K, V经过myAttention函数后计算出注意力矩阵：<br>
+$$Attention(Q, K, V) = softmax(QK^T) V$$ <br>
 ​	myAttention函数需要我们用C++实现
 
 ## 环境配置
