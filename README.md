@@ -47,7 +47,7 @@ class CausalSelfAttention(nn.Module):
 
 
 Q, K, V经过myAttention函数后计算出注意力矩阵：<br>
-$$Attention(Q, K, V) = softmax(QK^T) V$$ <br>
+<p align="center"> $$Attention(Q, K, V) = softmax(QK^T) V$$ </p>
 ​	myAttention函数需要我们用C++实现
 
 ## 环境配置
@@ -111,7 +111,7 @@ inline void fourDimWrite(std::vector<float> &tensor, int &x, int &y, int &z, int
 
 ​	part1要求实现最基础的注意力层nativeAttention，循环每个Batch和Head, 计算attention。确定了Batch index 和 Head index 后，Q 和 K 退化为2维张量，shape为（N，d）。
 
-​	先计算 $ QK^T $,  shape为(N, N)。
+​	先计算 $QK^T$,  shape为(N, N)。
 
 ​	再对 $QK^T$ 的每一行计算softmax， 结果仍然保存在$QK^T$中。
 
@@ -350,7 +350,7 @@ torch::Tensor myFusedAttention(torch::Tensor QTensor, torch::Tensor KTensor, tor
 
 ​	part2使用了分块矩阵乘法进行优化，part3使用了算子融合进行优化，那可不可以把part2和part3的优化思路结合到一起呢？这里的难点在于softmax算子必须要有完整一行的 $l(x) =  \Sigma{e^x}$ 信息，而分块矩阵乘法每次只算一个分块，不会一次性访问一行，所以两种算子融合存在难度。
 
-​	Flash Attention算法给出的解决方案是，每次计算一个分块行的softmax, 并且保存当前分块的 $ l(x) $ 信息， $l(x)$是softmax式子中的分母，迭代到该行的下一个分块时，更新 $l_{new}(x) $, 用 $l_{new}(x)$替换原来softmax式子中的分母， 迭代地计算每一行的softmax。
+​	Flash Attention算法给出的解决方案是，每次计算一个分块行的softmax, 并且保存当前分块的 $l(x)$ 信息， $l(x)$是softmax式子中的分母，迭代到该行的下一个分块时，更新 $l_{new}(x) $, 用 $l_{new}(x)$替换原来softmax式子中的分母， 迭代地计算每一行的softmax。
 
 ![FlashAttentionPseudo](assets/FlashAttentionPseudo.png)
 
