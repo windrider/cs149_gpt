@@ -113,7 +113,7 @@ inline void fourDimWrite(std::vector<float> &tensor, int &x, int &y, int &z, int
 
 ​	先计算 $QK^T$,  shape为(N, N)。
 
-​	再对 $QK^T$ 的每一行计算softmax， 结果仍然保存在$QK^T$中。
+​	再对 $QK^T$ 的每一行计算softmax， 结果仍然保存在 $QK^T$ 中。
 
 ​	最后计算 $QK^T * V$ ，shape为(N, d), 保存在O中。
 
