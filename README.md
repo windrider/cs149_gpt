@@ -111,11 +111,11 @@ inline void fourDimWrite(std::vector<float> &tensor, int &x, int &y, int &z, int
 
 ​	part1要求实现最基础的注意力层nativeAttention，循环每个Batch和Head, 计算attention。确定了Batch index 和 Head index 后，Q 和 K 退化为2维张量，shape为（N，d）。
 
-​	先计算$ QK^T $,  shape为(N, N)。
+​	先计算 $ QK^T $,  shape为(N, N)。
 
-​	再对$QK^T$ 的每一行计算softmax， 结果仍然保存在$QK^T$中。
+​	再对 $QK^T$ 的每一行计算softmax， 结果仍然保存在$QK^T$中。
 
-​	最后计算$QK^T * V$ ，shape为(N, d), 保存在O中。
+​	最后计算 $QK^T * V$ ，shape为(N, d), 保存在O中。
 
 ```c++
 for (int b = 0; b < B; b++){
@@ -271,9 +271,9 @@ torch::Tensor myUnfusedAttentionBlocked(torch::Tensor QTensor, torch::Tensor KTe
 
 ## part3 Fused Attention
 
-​	part1的nativeAttention方案，需要一个中间矩阵来存放$QK^T$，这个中间矩阵的shape为（N, N），并且nativeAttention需要对这个N*N矩阵的每一行都做softmax操作后，再与另一个N * d的矩阵V做矩阵乘法，这样对缓存和内存访问都不够友好。
+​	part1的nativeAttention方案，需要一个中间矩阵来存放 $QK^T$ ，这个中间矩阵的shape为（N, N），并且nativeAttention需要对这个N*N矩阵的每一行都做softmax操作后，再与另一个N * d的矩阵V做矩阵乘法，这样对缓存和内存访问都不够友好。
 
-​	出于性能优化的考虑，可以将这些操作进行融合，并且只使用一个N * 1的向量来代替原来N * N的中间矩阵。具体操作为每次将Q的一行与$K^T$相乘，得到的中间结果存在N * 1的向量ORow中，再对ORow计算softmax, 再和V相乘，结果写到输出矩阵O中。这样相当于将两个矩阵乘法和一个softmax操作融合到一起了。另外可以使用openmp对前三层循环进行多线程并行的优化。
+​	出于性能优化的考虑，可以将这些操作进行融合，并且只使用一个N * 1的向量来代替原来N * N的中间矩阵。具体操作为每次将Q的一行与 $K^T$ 相乘，得到的中间结果存在N * 1的向量ORow中，再对ORow计算softmax, 再和V相乘，结果写到输出矩阵O中。这样相当于将两个矩阵乘法和一个softmax操作融合到一起了。另外可以使用openmp对前三层循环进行多线程并行的优化。
 
 ```c++
 torch::Tensor myFusedAttention(torch::Tensor QTensor, torch::Tensor KTensor, torch::Tensor VTensor, torch::Tensor temp,
