@@ -167,11 +167,11 @@ for (int b = 0; b < B; b++){
 
 ​	part1的nativeAttention包含了两个矩阵乘法操作和一个softmax操作，其中朴素的矩阵乘法算子存在缓存命中率过低的问题。例如计算C = A * B, C的每个元素需要求A的一行与B的一列的点乘，当缓存不足以放下大矩阵的一行时，缓存中的数据总是要被替换掉以存放新数据，导致缓存命中率非常低。
 
-![current_matmul](\assets\current_matmul.png)
+![current_matmul](assets/current_matmul.png)
 
 ​	因此优化为分块矩阵乘法，每个矩阵块单独计算矩阵乘法，这样缓存行可以存放下分块后的矩阵行，进行分块矩阵乘法时缓存行就可以重复利用，能够提高缓存命中率。
 
-![blocked_matmul](\assets\blocked_matmul.png)
+![blocked_matmul](assets/blocked_matmul.png)
 
 ​	Q 和 K 的 shape 为 （N, d），可能不是 tile_size 的整数倍，因此需要考虑分块后剩余的不足一整块的部分，称为“remainder tail”， 其维度为`min(tile_size, N-tileIndex*tileSize)`
 
